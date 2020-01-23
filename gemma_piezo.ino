@@ -71,17 +71,42 @@ void loop() {
     // to the count of pixels minus one.
     // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
 
-    // For each pixel... color each based on rainbow gradient
-    for (i=0; i<N_PIXELS; i++)
-      pixels.setPixelColor(i,Wheel(map(i,0,pixels.numPixels()-1,30,150)));
-
-    //pixels.show(); // Send the updated pixel colors to the hardware.
+    // Display a different color on each hit
+    if (colorCount == 1) {
+      Serial.println("red");
+      // For each pixel... color each bright red
+      for (i=0; i<N_PIXELS; i++)
+        pixels.setPixelColor(i, pixels.Color(255, 0, 0));
+      colorCount++;
+    }
+    else if (colorCount == 2) {
+      Serial.println("green");
+      // For each pixel... color each bright green
+      for (i=0; i<N_PIXELS; i++)
+        pixels.setPixelColor(i, pixels.Color(0, 255, 0));
+      colorCount++;
+    }
+    else if (colorCount == 3) {
+      Serial.println("blue");
+      // For each pixel... color each bright blue
+      for (i=0; i<N_PIXELS; i++)
+        pixels.setPixelColor(i, pixels.Color(0, 0, 255));
+      colorCount++;
+    }
+    else {
+      Serial.println("rainbow");
+      // For each pixel... color each based on rainbow gradient
+      for (i=0; i<N_PIXELS; i++)
+        pixels.setPixelColor(i,Wheel(map(i,0,pixels.numPixels()-1,30,150)));
+      colorCount = 1;
+    }
+    // pixels.show(); // Send the updated pixel colors to the hardware.
   }
   else {
     // Turn off pixels
     for (i=0; i<N_PIXELS; i++)
       pixels.setPixelColor(i,   0,   0, 0);
-    //pixels.show(); // Update strip
+    // pixels.show(); // Update strip
   }
 
   pixels.show(); // Send the updated pixel colors to the hardware.
