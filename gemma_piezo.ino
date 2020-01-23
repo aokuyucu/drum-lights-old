@@ -1,116 +1,96 @@
-/* LED "Color Organ" for Adafruit Trinket and NeoPixel LEDs.
-
-Hardware requirements:
- - Adafruit Trinket or Gemma mini microcontroller (ATTiny85).
- - Adafruit Electret Microphone Amplifier (ID: 1063)
- - Several Neopixels, you can mix and match
-   o Adafruit Flora RGB Smart Pixels (ID: 1260)
-   o Adafruit NeoPixel Digital LED strip (ID: 1138)
-   o Adafruit Neopixel Ring (ID: 1463)
-
-Software requirements:
- - Adafruit NeoPixel library
-
-Connections:
- - 5 V to mic amp +
- - GND to mic amp -
- - Analog pinto microphone output (configurable below)
- - Digital pin to LED data input (configurable below)
-
-Written by Adafruit Industries.  Distributed under the BSD license.
-This paragraph must be included in any redistribution.
-*/
 #include <Adafruit_NeoPixel.h>
 
-#define N_PIXELS  60  // Number of pixels you are using
+// Which pin on the Arduino is connected to the NeoPixels?
+#define PIN        1 // On Trinket or Gemma, suggest changing this to 1
 #define MIC_PIN   A1  // Microphone is attached to Trinket GPIO #2/Gemma D2 (A1)
+
+// How many NeoPixels are attached to the Arduino?
+#define NUMPIXELS 60  //16 // Popular NeoPixel ring size
+#define N_PIXELS  60  // Number of pixels you are using
+
 #define LED_PIN    0  // NeoPixel LED strand is connected to GPIO #0 / D0
+
+// Used for Mic Sensor
+// Delete these next 4 lines?
 #define DC_OFFSET  0  // DC offset in mic signal - if unusure, leave 0
 #define NOISE     100  // Noise/hum/interference in mic signal
 #define SAMPLES   60  // Length of buffer for dynamic level adjustment
 #define TOP       (N_PIXELS +1) // Allow dot to go slightly off scale
-// Comment out the next line if you do not want brightness control or have a Gemma
-//#define POT_PIN    3  // if defined, a potentiometer is on GPIO #3 (A3, Trinket only) 
+
+#define DELAYVAL 500 // Time (in milliseconds) to pause between pixels
 
 byte
   peak      = 0,      // Used for falling dot
   dotCount  = 0,      // Frame counter for delaying dot-falling speed
   volCount  = 0;      // Frame counter for storing past volume data
-  
+
+// Used for Mic Sensor
+// Delete these next 5 lines?
 int
   vol[SAMPLES],       // Collection of prior volume samples
   lvl       = 10,     // Current "dampened" audio level
   minLvlAvg = 0,      // For dynamic adjustment of graph low & high
   maxLvlAvg = 512;
 
-Adafruit_NeoPixel  strip = Adafruit_NeoPixel(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
+// Adafruit_NeoPixel  strip = Adafruit_NeoPixel(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-// Alp
-const int threshold = 10;  // threshold value to decide when the detected sound is a knock or not
-
-// BEGIN add from NeoPixel simple example
-// NeoPixel Ring simple sketch (c) 2013 Shae Erisson
-// Released under the GPLv3 license to match the rest of the
-// Adafruit NeoPixel library
-
-// #include <Adafruit_NeoPixel.h>
-/* 
-#ifdef __AVR__
- #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
-#endif
-*/
-// Which pin on the Arduino is connected to the NeoPixels?
-#define PIN        1 // On Trinket or Gemma, suggest changing this to 1
-
-// How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS 60  //16 // Popular NeoPixel ring size
+const int threshold = 20;  // threshold value to decide when the detected sound is a knock or not
+int colorCount = 1;        // counter to determine which color to display next
 
 // When setting up the NeoPixel library, we tell it how many pixels,
 // and which pin to use to send signals. Note that for older NeoPixel
 // strips you might need to change the third parameter -- see the
 // strandtest example for more information on possible values.
-Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-
-#define DELAYVAL 500 // Time (in milliseconds) to pause between pixels
-// END add from NeoPixel simple example
+Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
+  // Used for Mic Sensor
+  // Delete these next 2 lines?
   //memset(vol, 0, sizeof(vol));
   memset(vol,0,sizeof(int)*SAMPLES);//Thanks Neil!
-  strip.begin();
-  Serial.begin(9600);       // use the serial port
 
-  // Add from NeoPixel simple example
+  Serial.begin(9600);       // use the serial port
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
 }
 
 void loop() {
-  pixels.clear(); // Set all pixel colors to 'off'
-
   uint8_t  i;
   uint16_t minLvl, maxLvl;
   int      sensorReading, height;
-  sensorReading = analogRead(MIC_PIN);                 // Raw reading from mic 
-  Serial.println("Raw sensor reading: ");
-  Serial.println(sensorReading);
+  uint8_t  bright = 255;
+
+  pixels.clear(); // Set all pixel colors to 'off'
+
+  sensorReading = analogRead(MIC_PIN);          // Raw reading from sensor
 
   if (sensorReading >= threshold) {
+    Serial.println("Raw sensor reading: ");
+    Serial.println(sensorReading);
+    
     // The first NeoPixel in a strand is #0, second is 1, all the way up
     // to the count of pixels minus one.
+    // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
 
-  // Color pixels based on rainbow gradient
-    for(i=0; i<N_PIXELS; i++) {
-      // if(i >= height)
-      if(n >= threshold)
-         strip.setPixelColor(i,   0,   0, 0);
-      else
-         strip.setPixelColor(i,Wheel(map(i,0,strip.numPixels()-1,30,150)));
-    }
+    // For each pixel... color each based on rainbow gradient
+    for (i=0; i<N_PIXELS; i++)
+      pixels.setPixelColor(i,Wheel(map(i,0,pixels.numPixels()-1,30,150)));
 
-   strip.show(); // Update strip
+    //pixels.show(); // Send the updated pixel colors to the hardware.
+  }
+  else {
+    // Turn off pixels
+    for (i=0; i<N_PIXELS; i++)
+      pixels.setPixelColor(i,   0,   0, 0);
+    //pixels.show(); // Update strip
+  }
 
-    for(int i=0; i<NUMPIXELS; i++) { // For each pixel...
+  pixels.show(); // Send the updated pixel colors to the hardware.
 
+/*
+ *   delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+ *   
+    // For each pixel...
+    for(int i=0; i<NUMPIXELS; i++) {
       // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
       // Here we're using a moderately bright green color:
       pixels.setPixelColor(i, pixels.Color(0, 150, 0));
@@ -124,7 +104,9 @@ void loop() {
     leds[0] = CRGB::Black;
     FastLED.show();
   }
-  delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+*/
+
+
   
 /*
   n   = abs(sensorReading - 512 - DC_OFFSET);            // Center on zero
@@ -139,13 +121,7 @@ void loop() {
   if(height > peak)     peak   = height; // Keep 'peak' dot at top
 */
 
-// if POT_PIN is defined, we have a potentiometer on GPIO #3 on a Trinket 
-//    (Gemma doesn't have this pin)
-  uint8_t bright = 255;
-#ifdef POT_PIN
-   bright = analogRead(POT_PIN);  // Read pin (0-255) (adjust potentiometer to give 0 to Vcc volts
-#endif
-
+/*
   strip.setBrightness(bright);    // Set LED brightness (if POT_PIN at top define commented out, will be full)
   
   // Color pixels based on rainbow gradient
@@ -180,18 +156,19 @@ void loop() {
 
   // delay(1000);  // delay to avoid overloading the serial port buffer
   delay(500);  // delay to avoid overloading the serial port buffer
+*/
 }
 
 // Input a value 0 to 255 to get a color value.
 // The colors are a transition r - g - b - back to r.
 uint32_t Wheel(byte WheelPos) {
   if(WheelPos < 85) {
-   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+   return pixels.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
   } else if(WheelPos < 170) {
    WheelPos -= 85;
-   return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+   return pixels.Color(255 - WheelPos * 3, 0, WheelPos * 3);
   } else {
    WheelPos -= 170;
-   return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+   return pixels.Color(0, WheelPos * 3, 255 - WheelPos * 3);
   }
 }
