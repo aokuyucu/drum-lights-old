@@ -1,1 +1,2 @@
 # drum-lights
+mic trigger
