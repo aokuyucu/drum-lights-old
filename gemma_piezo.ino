@@ -12,7 +12,7 @@
 // Delete next line?
 #define SAMPLES   60  // Length of buffer for dynamic level adjustment
 
-#define DELAYVAL 250 // Time (in milliseconds) to pause between pixels
+#define DELAYVAL 25 // Time (in milliseconds) to pause between pixels
 
 // Used for Mic Sensor
 // Delete next line?
@@ -34,13 +34,8 @@ int colorCount = 1;        // counter to determine which color to display next
 Adafruit_NeoPixel pixels(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
-  // Used for Mic Sensor
-  // Delete these next 2 lines?
-  //memset(vol, 0, sizeof(vol));
-  //memset(vol,0,sizeof(int)*SAMPLES);//Thanks Neil!
-
-  Serial.begin(9600);       // use the serial port
-  pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  Serial.begin(9600);  // use the serial port
+  pixels.begin();      // INITIALIZE NeoPixel strip object (REQUIRED)
 }
 
 void loop() {
