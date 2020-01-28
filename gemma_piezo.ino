@@ -9,30 +9,21 @@
 #define LED_PIN    0  // NeoPixel LED strand is connected to GPIO #0 / D0
 
 // Used for Mic Sensor
-// Delete these next 4 lines?
-#define DC_OFFSET  0  // DC offset in mic signal - if unusure, leave 0
-#define NOISE     100  // Noise/hum/interference in mic signal
+// Delete next line?
 #define SAMPLES   60  // Length of buffer for dynamic level adjustment
-#define TOP       (N_PIXELS +1) // Allow dot to go slightly off scale
 
-#define DELAYVAL 1000 // Time (in milliseconds) to pause between pixels
-
-byte
-  peak      = 0,      // Used for falling dot
-  dotCount  = 0,      // Frame counter for delaying dot-falling speed
-  volCount  = 0;      // Frame counter for storing past volume data
+#define DELAYVAL 250 // Time (in milliseconds) to pause between pixels
 
 // Used for Mic Sensor
-// Delete these next 5 lines?
+// Delete next line?
 int
-  vol[SAMPLES],       // Collection of prior volume samples
-  lvl       = 10,     // Current "dampened" audio level
-  minLvlAvg = 0,      // For dynamic adjustment of graph low & high
-  maxLvlAvg = 512;
-
-// Adafruit_NeoPixel  strip = Adafruit_NeoPixel(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
+  vol[SAMPLES];       // Collection of prior volume samples
 
 const int threshold = 20;  // threshold value to decide when the detected sound is a knock or not
+const int threshold1 = 20;
+const int threshold2 = 100;
+const int threshold3 = 200;
+const int threshold4 = 300;
 int colorCount = 1;        // counter to determine which color to display next
 
 // When setting up the NeoPixel library, we tell it how many pixels,
@@ -46,7 +37,7 @@ void setup() {
   // Used for Mic Sensor
   // Delete these next 2 lines?
   //memset(vol, 0, sizeof(vol));
-  memset(vol,0,sizeof(int)*SAMPLES);//Thanks Neil!
+  //memset(vol,0,sizeof(int)*SAMPLES);//Thanks Neil!
 
   Serial.begin(9600);       // use the serial port
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
@@ -110,7 +101,7 @@ void loop() {
 
   pixels.show(); // Send the updated pixel colors to the hardware.
 
-  // delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+  delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
 }
 
 // Input a value 0 to 255 to get a color value.
