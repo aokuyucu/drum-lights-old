@@ -1,12 +1,10 @@
 #include <Adafruit_NeoPixel.h>
 
 // Which pin on the Arduino is connected to the NeoPixels?
-#define PIN        1 // On Trinket or Gemma, suggest changing this to 1
-#define MIC_PIN   A1  // Microphone is attached to Trinket GPIO #2/Gemma D2 (A1)
+#define ANALOG_PIN   A1  // Microphone is attached to Trinket GPIO #2/Gemma D2 (A1)
 
 // How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS 60  //16 // Popular NeoPixel ring size
-#define N_PIXELS  60  // Number of pixels you are using
+#define N_PIXELS  33  // Number of pixels you are using
 
 #define LED_PIN    0  // NeoPixel LED strand is connected to GPIO #0 / D0
 
@@ -17,7 +15,7 @@
 #define SAMPLES   60  // Length of buffer for dynamic level adjustment
 #define TOP       (N_PIXELS +1) // Allow dot to go slightly off scale
 
-#define DELAYVAL 500 // Time (in milliseconds) to pause between pixels
+#define DELAYVAL 1000 // Time (in milliseconds) to pause between pixels
 
 byte
   peak      = 0,      // Used for falling dot
@@ -41,7 +39,8 @@ int colorCount = 1;        // counter to determine which color to display next
 // and which pin to use to send signals. Note that for older NeoPixel
 // strips you might need to change the third parameter -- see the
 // strandtest example for more information on possible values.
-Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
+// Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // Used for Mic Sensor
@@ -61,7 +60,7 @@ void loop() {
 
   pixels.clear(); // Set all pixel colors to 'off'
 
-  sensorReading = analogRead(MIC_PIN);          // Raw reading from sensor
+  sensorReading = analogRead(ANALOG_PIN);          // Raw reading from sensor
 
   if (sensorReading >= threshold) {
     Serial.println("Raw sensor reading: ");
@@ -111,9 +110,9 @@ void loop() {
 
   pixels.show(); // Send the updated pixel colors to the hardware.
 
+  // delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+
 /*
- *   delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
- *   
     // For each pixel...
     for(int i=0; i<NUMPIXELS; i++) {
       // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
