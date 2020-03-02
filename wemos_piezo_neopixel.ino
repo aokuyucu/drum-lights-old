@@ -10,7 +10,7 @@
 #define DELAYVAL 25 // Time (in milliseconds) to pause between pixels
 
 const int threshold = 20;  // threshold value to decide when the detected sound is a knock or not
-const int threshold1 = 20;
+const int threshold1 = 50;
 const int threshold2 = 100;
 const int threshold3 = 200;
 const int threshold4 = 300;
@@ -24,8 +24,15 @@ int colorCount = 1;        // counter to determine which color to display next
 Adafruit_NeoPixel pixels(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
+  uint8_t  i;
   Serial.begin(9600);  // use the serial port
   pixels.begin();      // INITIALIZE NeoPixel strip object (REQUIRED)
+  
+  pixels.clear(); // Set all pixel colors to 'off'
+  for (i=0; i<N_PIXELS; i++)
+        pixels.setPixelColor(i, pixels.Color(0, 0, 255));
+  pixels.show(); // Send the updated pixel colors to the hardware.
+  delay(2000);  // delay to avoid overloading the serial port buffer
 }
 
 void loop() {
@@ -38,7 +45,7 @@ void loop() {
 
   sensorReading = analogRead(ANALOG_PIN);          // Raw reading from sensor
 
-  if (sensorReading >= threshold) {
+  if (sensorReading >= threshold2) {
     Serial.println("Raw sensor reading: ");
     Serial.println(sensorReading);
     
@@ -46,8 +53,8 @@ void loop() {
     // to the count of pixels minus one.
     // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
 
-    // Display a different color on each hit
-    if (colorCount == 1) {
+    // Display a different color on each trigger
+    /* if (colorCount == 1) {
       Serial.println("red");
       // For each pixel... color each bright red
       for (i=0; i<N_PIXELS; i++)
@@ -62,10 +69,12 @@ void loop() {
       colorCount++;
     }
     else if (colorCount == 3) {
+    */
       Serial.println("blue");
       // For each pixel... color each bright blue
       for (i=0; i<N_PIXELS; i++)
         pixels.setPixelColor(i, pixels.Color(0, 0, 255));
+    /*
       colorCount++;
     }
     else {
@@ -75,6 +84,7 @@ void loop() {
         pixels.setPixelColor(i,Wheel(map(i,0,pixels.numPixels()-1,30,150)));
       colorCount = 1;
     }
+    */
     // pixels.show(); // Send the updated pixel colors to the hardware.
   }
   else {
@@ -86,7 +96,7 @@ void loop() {
 
   pixels.show(); // Send the updated pixel colors to the hardware.
 
-  delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+  //delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
 }
 
 // Input a value 0 to 255 to get a color value.
