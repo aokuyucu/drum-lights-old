@@ -4,20 +4,11 @@
 #define ANALOG_PIN   A0  // Piezo attached to Analog A0 on Wemos or Gemma D2 (A1)
 
 // How many NeoPixels are attached to the Arduino?
-#define N_PIXELS  59  //33  // Number of pixels you are using
+#define N_PIXELS  113  //33  // Number of pixels you are using
 
 #define LED_PIN    0  // NeoPixel LED strand is connected to GPIO #0 / D0
 
-// Used for Mic Sensor
-// Delete next line?
-#define SAMPLES   60  // Length of buffer for dynamic level adjustment
-
 #define DELAYVAL 25 // Time (in milliseconds) to pause between pixels
-
-// Used for Mic Sensor
-// Delete next line?
-int
-  vol[SAMPLES];       // Collection of prior volume samples
 
 const int threshold = 20;  // threshold value to decide when the detected sound is a knock or not
 const int threshold1 = 20;
