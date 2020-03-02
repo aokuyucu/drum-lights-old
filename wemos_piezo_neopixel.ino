@@ -37,15 +37,14 @@ void setup() {
 
 void loop() {
   uint8_t  i;
-  uint16_t minLvl, maxLvl;
-  int      sensorReading, height;
+  int      sensorReading;
   uint8_t  bright = 255;
 
   pixels.clear(); // Set all pixel colors to 'off'
 
   sensorReading = analogRead(ANALOG_PIN);          // Raw reading from sensor
 
-  if (sensorReading >= threshold2) {
+  if (sensorReading >= threshold) {
     Serial.println("Raw sensor reading: ");
     Serial.println(sensorReading);
     
@@ -53,6 +52,10 @@ void loop() {
     // to the count of pixels minus one.
     // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
 
+    // For each pixel... color each bright blue
+    for (i=0; i<N_PIXELS; i++)
+      pixels.setPixelColor(i, pixels.Color(0, 0, bright));
+        
     // Display a different color on each trigger
     /* if (colorCount == 1) {
       Serial.println("red");
@@ -69,12 +72,10 @@ void loop() {
       colorCount++;
     }
     else if (colorCount == 3) {
-    */
       Serial.println("blue");
       // For each pixel... color each bright blue
       for (i=0; i<N_PIXELS; i++)
         pixels.setPixelColor(i, pixels.Color(0, 0, 255));
-    /*
       colorCount++;
     }
     else {
@@ -85,7 +86,6 @@ void loop() {
       colorCount = 1;
     }
     */
-    // pixels.show(); // Send the updated pixel colors to the hardware.
   }
   else {
     // Turn off pixels
@@ -96,7 +96,7 @@ void loop() {
 
   pixels.show(); // Send the updated pixel colors to the hardware.
 
-  //delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+  delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
 }
 
 // Input a value 0 to 255 to get a color value.
