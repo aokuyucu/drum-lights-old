@@ -15,6 +15,7 @@ const int threshold2 = 100;
 const int threshold3 = 200;
 const int threshold4 = 300;
 int colorCount = 1;        // counter to determine which color to display next
+uint8_t  bright = 255;
 
 // When setting up the NeoPixel library, we tell it how many pixels,
 // and which pin to use to send signals. Note that for older NeoPixel
@@ -29,8 +30,16 @@ void setup() {
   pixels.begin();      // INITIALIZE NeoPixel strip object (REQUIRED)
   
   pixels.clear(); // Set all pixel colors to 'off'
+  
+  for (i=0; i<N_PIXELS; i++) {
+    pixels.setPixelColor(i, pixels.Color(0, 0, bright));
+    pixels.show();
+    pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+    delay(30);
+  }
+
   for (i=0; i<N_PIXELS; i++)
-        pixels.setPixelColor(i, pixels.Color(0, 0, 255));
+    pixels.setPixelColor(i, pixels.Color(0, 0, bright));
   pixels.show(); // Send the updated pixel colors to the hardware.
   delay(2000);  // delay to avoid overloading the serial port buffer
 }
@@ -38,7 +47,6 @@ void setup() {
 void loop() {
   uint8_t  i;
   int      sensorReading;
-  uint8_t  bright = 255;
 
   pixels.clear(); // Set all pixel colors to 'off'
 
@@ -91,12 +99,11 @@ void loop() {
     // Turn off pixels
     for (i=0; i<N_PIXELS; i++)
       pixels.setPixelColor(i,   0,   0, 0);
-    // pixels.show(); // Update strip
   }
 
   pixels.show(); // Send the updated pixel colors to the hardware.
 
-  delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+  // delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
 }
 
 // Input a value 0 to 255 to get a color value.
