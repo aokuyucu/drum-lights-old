@@ -1,12 +1,11 @@
 #include <Adafruit_NeoPixel.h>
 
 // Which pin on the Arduino is connected to the NeoPixels?
-#define ANALOG_PIN   A0  // Piezo attached to Analog A0 on Wemos or Gemma D2 (A1)
+#define ANALOG_PIN  A0  // Piezo attached to Analog A0 on Wemos or Gemma D2 (A1)
+#define LED_PIN     D5  // NeoPixel LED strand is connected to GPIO #0 / D0
 
 // How many NeoPixels are attached to the Arduino?
 #define N_PIXELS  113  //33  // Number of pixels you are using
-
-#define LED_PIN    0  // NeoPixel LED strand is connected to GPIO #0 / D0
 
 #define DELAYVAL 25 // Time (in milliseconds) to pause between pixels
 
