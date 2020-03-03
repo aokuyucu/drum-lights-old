@@ -9,11 +9,13 @@
 
 #define DELAYVAL 25 // Time (in milliseconds) to pause between pixels
 
-const int threshold = 20;  // threshold value to decide when the detected sound is a knock or not
-const int threshold1 = 50;
-const int threshold2 = 100;
-const int threshold3 = 200;
-const int threshold4 = 300;
+const int threshold1 = 20;
+const int threshold2 = 65;
+const int threshold3 = 100;
+const int threshold4 = 200;
+const int threshold5 = 300;
+const int threshold = threshold2;  // threshold value to decide when the detected sound is a knock or not
+
 int colorCount = 1;        // counter to determine which color to display next
 uint8_t  bright = 255;
 
