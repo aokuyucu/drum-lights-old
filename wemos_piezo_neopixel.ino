@@ -36,24 +36,19 @@ void setup() {
   // Chase
   chase(0, 0, bright);
 /*
-  for (i=0; i<N_PIXELS; i++) {
-  pixels.setPixelColor(i, pixels.Color(0, 0, bright));
-    pixels.show();
-    pixels.setPixelColor(i, pixels.Color(0, 0, 0));
-    delay(30);
-  }
-
   // All on for 2 seconds
   for (i=0; i<N_PIXELS; i++)
     pixels.setPixelColor(i, pixels.Color(0, 0, bright));
   pixels.show(); // Send the updated pixel colors to the hardware.
   delay(2000);
 */
+  /*
   shortFlicker(0, 0, bright);
   shortFlicker(0, 0, bright);
   shortFlicker(0, 0, bright);
   mediumFlicker(0, 0, bright);
   longFlicker(0, 0, bright);
+  */
 
   // All on for 3 seconds
   for (i=0; i<N_PIXELS; i++)
