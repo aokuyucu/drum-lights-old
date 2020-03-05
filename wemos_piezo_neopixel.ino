@@ -14,7 +14,7 @@ const int threshold2 = 65;
 const int threshold3 = 100;
 const int threshold4 = 200;
 const int threshold5 = 300;
-const int threshold = threshold1;  // threshold value to decide when the detected sound is a knock or not
+const int threshold = threshold2;  // threshold value to decide when the detected sound is a knock or not
 
 int colorCount = 1;        // counter to determine which color to display next
 uint8_t  bright = 255;
@@ -26,15 +26,31 @@ uint8_t  bright = 255;
 // Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
+uint32_t purple = pixels.Color(128, 0, 128),
+          darkviolet = pixels.Color(148,0,211),
+          darkorchid = pixels.Color(153,50,204),
+          darkmagenta = pixels.Color(139,0,139),
+          magenta = pixels.Color(255, 0, 255),
+          yellow = pixels.Color(255, 255, 0),
+          red = pixels.Color(255, 0, 0),
+          green = pixels.Color(0, 255, 0),
+          blue = pixels.Color(0, 0, 255);
+uint32_t bass1color = red,
+          bass2color = purple,
+          bass3color = yellow,
+          bass4color = green,
+          bass5color = blue;
+uint32_t myColor = bass2color;
+
 void setup() {
-  uint8_t  i;
+  uint8_t  i, interimDelay;
   Serial.begin(9600);  // use the serial port
   pixels.begin();      // INITIALIZE NeoPixel strip object (REQUIRED)
-  
-  pixels.clear(); // Set all pixel colors to 'off'
+  // pixels.setBrightness(bright);   // Set to full brightness for the duration of the sketch
+  pixels.clear();      // Set all pixel colors to 'off'
 
   // Chase
-  chase(0, 0, bright);
+  // chase(0, 0, bright);
 /*
   // All on for 2 seconds
   for (i=0; i<N_PIXELS; i++)
@@ -42,19 +58,48 @@ void setup() {
   pixels.show(); // Send the updated pixel colors to the hardware.
   delay(2000);
 */
-  /*
-  shortFlicker(0, 0, bright);
-  shortFlicker(0, 0, bright);
-  shortFlicker(0, 0, bright);
-  mediumFlicker(0, 0, bright);
-  longFlicker(0, 0, bright);
-  */
 
-  // All on for 3 seconds
+  shortFlicker(bass2color);
+  shortFlicker(bass2color);
+  shortFlicker(bass2color);
+  mediumFlicker(bass2color);
+  mediumFlicker(bass2color);
+
+  // All on for 2 seconds
+  interimDelay = 200;
+  pixels.fill(myColor, 0, N_PIXELS);
+  pixels.setBrightness(32);
+  pixels.show();
+  delay(interimDelay);
+  pixels.setBrightness(64);
+  pixels.show();
+  delay(interimDelay);
+  pixels.setBrightness(128);
+  pixels.show();
+  delay(interimDelay);
+  pixels.setBrightness(160);
+  pixels.show();
+  delay(interimDelay);
+  pixels.setBrightness(192);
+  pixels.show();
+  delay(interimDelay);
+  pixels.setBrightness(215);
+  pixels.show();
+  delay(interimDelay);
+  pixels.setBrightness(230);
+  pixels.show();
+  delay(interimDelay);
+  pixels.setBrightness(240);
+  pixels.show();
+  delay(interimDelay);pixels.setBrightness(255);
+  pixels.show();
+  delay(500);
+  /*
   for (i=0; i<N_PIXELS; i++)
-    pixels.setPixelColor(i, pixels.Color(0, 0, bright));
+    pixels.setPixelColor(i, pixels.Color(128, 0, 128));
+  */
   pixels.show(); // Send the updated pixel colors to the hardware.
-  delay(3000);
+  delay(2000);
 }
 
 void loop() {
@@ -73,50 +118,21 @@ void loop() {
     // to the count of pixels minus one.
     // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
 
-    // For each pixel... color each bright blue
-    for (i=0; i<N_PIXELS; i++)
-      pixels.setPixelColor(i, pixels.Color(0, 0, bright));
-        
-    // Display a different color on each trigger
-    /* if (colorCount == 1) {
-      Serial.println("red");
-      // For each pixel... color each bright red
-      for (i=0; i<N_PIXELS; i++)
-        pixels.setPixelColor(i, pixels.Color(255, 0, 0));
-      colorCount++;
-    }
-    else if (colorCount == 2) {
-      Serial.println("green");
-      // For each pixel... color each bright green
-      for (i=0; i<N_PIXELS; i++)
-        pixels.setPixelColor(i, pixels.Color(0, 255, 0));
-      colorCount++;
-    }
-    else if (colorCount == 3) {
-      Serial.println("blue");
-      // For each pixel... color each bright blue
-      for (i=0; i<N_PIXELS; i++)
-        pixels.setPixelColor(i, pixels.Color(0, 0, 255));
-      colorCount++;
-    }
-    else {
-      Serial.println("rainbow");
-      // For each pixel... color each based on rainbow gradient
-      for (i=0; i<N_PIXELS; i++)
-        pixels.setPixelColor(i,Wheel(map(i,0,pixels.numPixels()-1,30,150)));
-      colorCount = 1;
-    }
-    */
+    // Color each pixel... myColor
+    pixels.fill(myColor, 0, N_PIXELS);
+    //for (i=0; i<N_PIXELS; i++)
+    //  pixels.setPixelColor(i, pixels.Color(128, 0, 128));
   }
   else {
     // Turn off pixels
-    for (i=0; i<N_PIXELS; i++)
-      pixels.setPixelColor(i,   0,   0, 0);
+    pixels.clear();
+    //for (i=0; i<N_PIXELS; i++)
+    //  pixels.setPixelColor(i,   0,   0, 0);
   }
 
   pixels.show(); // Send the updated pixel colors to the hardware.
 
-  // delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
+  delay(DELAYVAL);  // delay to avoid overloading the serial port buffer
 }
 
 
@@ -130,22 +146,32 @@ void chase(uint8_t redValue, uint8_t greenValue, uint8_t blueValue) {
   }
 }
 
-void shortFlicker(uint8_t red, uint8_t green, uint8_t blue) {
-  flicker(100, 25, red, green, blue);
+void shortFlicker(uint32_t color) {
+  flicker(100, 25, color);
 }
 
-void mediumFlicker(uint8_t red, uint8_t green, uint8_t blue) {
-  flicker(300, 25, red, green, blue);
+void mediumFlicker(uint32_t color) {
+  flicker(300, 25, color);
 }
 
-void longFlicker(uint8_t red, uint8_t green, uint8_t blue) {
-  flicker(500, 50, red, green, blue);
+void longFlicker(uint32_t color) {
+  flicker(500, 50, color);
 }
 
-void flicker(uint8_t onMS, uint8_t offMS, uint8_t red, uint8_t green, uint8_t blue) {
+void flicker(uint8_t onMS, uint8_t offMS, uint32_t color) {
+/*
   uint8_t  i;
   for (i=0; i<N_PIXELS; i++)
     pixels.setPixelColor(i, pixels.Color(red, green, blue));
+*/
+/*
+  Serial.println("color: ");
+  Serial.println(color);
+  Serial.println("brightness: ");
+  Serial.println(pixels.getBrightness());
+*/
+  
+  pixels.fill(color, 0, N_PIXELS);
   pixels.show();
   delay(onMS);
   
