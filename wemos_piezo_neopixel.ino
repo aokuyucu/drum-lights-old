@@ -27,6 +27,13 @@ uint8_t  bright = 255;
 // Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels(N_PIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
+uint8_t ShortFlash_OnMS = 100,
+        ShortFlash_OffMS = 25,
+        MediumFlash_OnMS = 300,
+        MediumFlash_OffMS = 25,
+        LongFlash_OnMS = 500,
+        LongFlash_OffMS = 50;
+
 uint32_t purple = pixels.Color(128, 0, 128),
           darkviolet = pixels.Color(148,0,211),
           darkorchid = pixels.Color(153,50,204),
@@ -52,11 +59,11 @@ void setup() {
   pixels.setBrightness(bright);   // Set to full brightness for the duration of the sketch
 
   // Flicker a few times...
-  shortFlicker(myColor);
-  shortFlicker(myColor);
-  shortFlicker(myColor);
-  mediumFlicker(myColor);
-  mediumFlicker(myColor);
+  flash(ShortFlash_OnMS, ShortFlash_OffMS, myColor);
+  flash(ShortFlash_OnMS, ShortFlash_OffMS, myColor);
+  flash(ShortFlash_OnMS, ShortFlash_OffMS, myColor);
+  flash(MediumFlash_OnMS, MediumFlash_OffMS, myColor);
+  flash(MediumFlash_OnMS, MediumFlash_OffMS, myColor);
 
   // ... then gradually ascend to full brightness
   gradualAscent(myColor);
@@ -68,7 +75,7 @@ void loop() {
 
   pixels.clear(); // Set all pixel colors to 'off'
 
-  sensorReading = analogRead(ANALOG_PIN);          // Raw reading from sensor
+  sensorReading = analogRead(ANALOG_PIN); // Raw reading from sensor
 
   // Limit the number of readings printed
   if (sensorReading >= threshold1) {
@@ -104,31 +111,7 @@ void chase(uint8_t redValue, uint8_t greenValue, uint8_t blueValue) {
   }
 }
 
-void shortFlicker(uint32_t color) {
-  flicker(100, 25, color);
-}
-
-void mediumFlicker(uint32_t color) {
-  flicker(300, 25, color);
-}
-
-void longFlicker(uint32_t color) {
-  flicker(500, 50, color);
-}
-
-void flicker(uint8_t onMS, uint8_t offMS, uint32_t color) {
-/*
-  uint8_t  i;
-  for (i=0; i<N_PIXELS; i++)
-    pixels.setPixelColor(i, pixels.Color(red, green, blue));
-*/
-/*
-  Serial.println("color: ");
-  Serial.println(color);
-  Serial.println("brightness: ");
-  Serial.println(pixels.getBrightness());
-*/
-  
+void flash(uint8_t onMS, uint8_t offMS, uint32_t color) {
   pixels.fill(color, 0, N_PIXELS);
   pixels.show();
   delay(onMS);
