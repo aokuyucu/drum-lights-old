@@ -4,8 +4,8 @@
 #define ANALOG_PIN  A0  // Piezo attached to Analog A0 on Wemos or Gemma D2 (A1)
 #define LED_PIN     D5  // NeoPixel LED strand is connected to GPIO #0 / D0
 
-// How many NeoPixels are attached to the Arduino?
-#define N_PIXELS  113  //33  // Number of pixels you are using
+// Number of LEDs attached to the Arduino
+#define N_PIXELS  150
 
 #define DELAYVAL 25 // Time (in milliseconds) to pause between pixels
 #define LOOP_DELAY 25 // Time (in milliseconds) to pause between loops
@@ -35,14 +35,15 @@ uint8_t ShortFlash_OnMS = 100,
         LongFlash_OffMS = 50;
 
 uint32_t purple = pixels.Color(128, 0, 128),
+          yellow = pixels.Color(128, 128, 0),
+          red = pixels.Color(255, 0, 0),
+          green = pixels.Color(0, 255, 0),
+          blue = pixels.Color(0, 0, 255),
+          darkYellow1 = pixels.Color(204, 204, 0),
           darkviolet = pixels.Color(148,0,211),
           darkorchid = pixels.Color(153,50,204),
           darkmagenta = pixels.Color(139,0,139),
-          magenta = pixels.Color(255, 0, 255),
-          yellow = pixels.Color(255, 255, 0),
-          red = pixels.Color(255, 0, 0),
-          green = pixels.Color(0, 255, 0),
-          blue = pixels.Color(0, 0, 255);
+          magenta = pixels.Color(255, 0, 255);
 
 uint32_t bass1color = red,
           bass2color = purple,
@@ -56,7 +57,6 @@ void setup() {
   uint8_t  interimDelay = 150;  // delay between each increasing step of brightness in the gradual ascent
   Serial.begin(9600);  // use the serial port
   pixels.begin();      // INITIALIZE NeoPixel strip object (REQUIRED)
-  pixels.setBrightness(bright);   // Set to full brightness for the duration of the sketch
 
   // Flicker a few times...
   flash(ShortFlash_OnMS, ShortFlash_OffMS, myColor);
@@ -67,6 +67,9 @@ void setup() {
 
   // ... then gradually ascend to full brightness
   gradualAscent(myColor);
+
+  // Set to full brightness for the duration of the sketch
+  pixels.setBrightness(bright);
 }
 
 void loop() {
